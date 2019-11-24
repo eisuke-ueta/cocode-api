@@ -1,0 +1,38 @@
+version: '3.6'
+services:
+
+  # API
+  cocode-api:
+    container_name: cocode-api
+    build: ./
+    volumes:
+      - .:/usr/src/cocode-api
+    working_dir: /usr/src/cocode-api
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    networks:
+      - cocode_common_link
+
+  # DB
+  cocode-mysql:
+    container_name: cocode-mysql
+    build: ./mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/sqls:/docker-entrypoint-initdb.d
+    env_file:
+      - .env
+    networks:
+      - cocode_common_link
+
+volumes:
+  mysql_data:
+  # migration_data:
+
+networks:
+  cocode_common_link:
+    external: true
